@@ -3,9 +3,14 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
+  <el-form>
+    <el-input :prefix="Calender"></el-input>
+  </el-form>
   <router-view/>
 </template>
-
+<script setup>
+import { ElForm, ElInput, ElButton, Calender } from "element-plus";
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
