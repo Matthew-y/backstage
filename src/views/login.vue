@@ -8,21 +8,21 @@
     <el-row>
       <el-col class="title" :span="7" :offset="8">商城系统登录</el-col>
     </el-row>
-    <el-form ref="formRef" :model="rulelForm" :rules="rules" label-width="80px" :inline="false" size="normal">
+    <el-form ref="formInstance" :model="ruleForm" :rules="rules" size="normal">
       <el-row>
         <el-col :span="24" :offset="0">
           <el-form-item prop="name">
-            <el-input class="username" size="large" v-model="ruleForm.name" :prefix-icon="User" placeholder="请输入用户名" />
+            <el-input v-model="ruleForm.name" class="username" type="text" size="large" :prefix-icon="User" placeholder="请输入用户名" />
           </el-form-item>
         </el-col>
-        <span>{{ usernameNotice }}</span>
       </el-row>
       <el-row>
         <el-col :span="24" :offset="0">
-          <el-form-item prop="pass" size="normal">
+          <el-form-item prop="pw">
             <el-input
+              type="password"
               class="password"
-              v-model="user.password"
+              v-model="ruleForm.pw"
               size="large"
               :prefix-icon="Lock"
               show-password
@@ -43,35 +43,53 @@
 </template>
 <script setup>
 // @ is an alias to /src
-import { ref, reactive } from "vue";
-// import { ElInput, ElRow, ElCol } from "element-plus";
+import { ref, reactive, getCurrentInstance } from "vue";
 import { User, Lock } from "@element-plus/icons-vue";
-import "element-plus/dist/index.css";
-import { trigger } from "@vue/reactivity";
+import { ElMessage } from "element-plus";
 
-let user = ref({
-  name: "",
-  password: "",
-});
+const { proxy } = getCurrentInstance();
+const formInstance = ref(null);
 const ruleForm = reactive({
   name: "",
-  pass: ""
+  pw: "",
 });
-const formRef = ref();
 const rules = reactive({
-  name: [
-    { required: true, message: "您还没有输入用户名", trigger: "blur" },
-  ],
-  pass: [
-    { required: true, message: "您还没有输入用户密码", trigger: "blur" }
-  ]
+  name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  pw: [{ validator: validatePass, trigger: "blur" }],
 });
-
-function validateName$Pass() {
-  
+//验证用户名密码是否为空
+function validateName(rule, value, callback) {
+  console.log(value);
+  if (value === "") {
+    callback(new Error("请输入用户名"));
+  } else {
+    callback();
+  }
 }
 
-function handleLogin() {}
+function validatePass(rule, value, callback) {
+  if (value === "") {
+    callback(new Error("请输入用户密码"));
+  } else {
+    callback();
+  }
+}
+
+// 处理登录
+function handleLogin() {
+  console.log(ruleForm);
+  formInstance.value.validate((valid, fields) => {
+    if (valid) {
+      proxy.$axios.get("http://api_devs.wanxikeji.cn/api/admin/login", { params: ruleForm }).then((res) => {
+        console.log(res);
+        if (res.data.code === 2000) {
+          window.localStorage.setItem("AccessToken", res.data.data.token);
+          proxy.$router.push({ path: "/backstage" });
+        }
+      });
+    }
+  });
+}
 </script>
 <style>
 .input-box {
@@ -95,11 +113,8 @@ div .el-input {
   font-size: 14px;
   color: #8c8c8c;
 }
-.el-form-item{
+.el-form-item {
   margin-bottom: 0;
-}
-.el-form-item div {
-  margin-left: 0 !important;
 }
 .login-avatar {
   width: 50px;
