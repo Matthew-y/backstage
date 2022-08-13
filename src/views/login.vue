@@ -84,7 +84,7 @@ function handleLogin() {
         console.log(res);
         if (res.data.code === 2000) {
           window.localStorage.setItem("AccessToken", res.data.data.token);
-          proxy.$router.push({ path: "/backstage" });
+          proxy.$router.push({ path: "/index" });
         }
       });
     }

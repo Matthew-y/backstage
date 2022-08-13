@@ -7,13 +7,16 @@ import elementPlus from "element-plus";
 import "element-plus/dist/index.css";
 
 router.beforeEach((to, from, next) => {
+  const accessToken = window.localStorage.getItem('AccessToken')
   if (to.path === '/') {
+    if(accessToken){
+        router.push({ path: '/index' });
+    }
     next();
   }else{
-    const accessToken = window.localStorage.getItem('AccessToken')
     if(accessToken){
       if (to.path === '/') {
-        router.push({ path: '/backstage' });
+        router.push({ path: '/index' });
       }
       next()
     }else{
