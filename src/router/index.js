@@ -40,6 +40,10 @@ const routes = [
         component: () => import("@/views/commodity/list.vue"),
       },
       {
+        path: "/index/commodity/createProduct",
+        component: () => import("@/views/commodity/createProduct.vue"),
+      },
+      {
         path: "/index/commodity/classification",
         component: () => import("@/views/commodity/classification.vue"),
       },

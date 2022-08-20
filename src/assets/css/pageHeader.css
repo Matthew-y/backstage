@@ -1,0 +1,29 @@
+.el-container.full-page {
+  width: 100%;
+  height: 100%;
+}
+.list-box {
+  width: inherit;
+  height: unset;
+  padding: 24px;
+  background-color: white;
+}
+.list-box .title {
+  width: inherit;
+  height: 24px;
+  margin-bottom: 16px;
+}
+.el-button {
+  width: 79px;
+  height: 32px;
+  border-radius: 2px;
+  border: none;
+  /* background-color: #1890ff; */
+}
+/* .el-button span {} */
+span.action {
+  margin-right: 8px;
+  color: #1890ff;
+  user-select: none;
+  cursor: pointer;
+}

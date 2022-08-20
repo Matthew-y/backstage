@@ -58,7 +58,7 @@
                 </div>
                 <el-menu-item
                   v-for="(item, index) in submenuData.list"
-                  @click="loadComponentPage(submenuData.list[index].subtitle, null, index)"
+                  @click="loadComponentPage(submenuData.list[index].subtitle, index, index)"
                   :index="String(index)"
                   :key="index"
                 >
@@ -251,11 +251,9 @@ function loadComponentPage(pageName, index, subIndex) {
   console.log("加载子组件", index);
   if (submenuData.value.list) {
     let newPath = submenuData.value.list[subIndex].path;
-    console.log(submenuData.value.list);
     proxy.$router.push({ path: newPath, query: { itemIndex: index, subItemIndex: subIndex } });
   } else {
     console.log("空页面:", menuData.value[index].path);
-
     proxy.$router.push({ path: menuData.value[index].path, query: { itemIndex: index, subItemIndex: subIndex } });
   }
   loadCurrentPageName(pageName);
@@ -295,6 +293,7 @@ onMounted(() => {
   }
 
   loadComponentPage(submenuData.value.list[0].subtitle, mainIndex, subIndex);
+  proxy.$router.push('/index/commodity/classification')
 });
 </script>
 <style scoped>
@@ -421,7 +420,7 @@ ul.el-menu:not(.el-menu--collapse) {
 }
 /* 内部子菜单 */
 .sub-menu {
-  height: 896px;
+  height: 864px;
 }
 .sub-menu .el-aside {
   width: 120px;
