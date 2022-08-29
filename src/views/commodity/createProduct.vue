@@ -15,14 +15,11 @@
               <el-tree-select
                 class="input-box"
                 :data="selectOptions"
-                v-model="formBasic.classification"
-                multiple
-                :render-after-expand="false"
-                show-checkbox
-                check-on-click-node
-                placeholder="请选择商品分类"
-                clearable
                 node-key="value"
+                check-on-click-node
+                v-model="formBasic.classification"
+                :render-after-expand="false"
+                multiple
                 :default-checked-keys="formBasic.classification"
                 :default-expanded-keys="formBasic.classification"
               />
@@ -580,7 +577,11 @@ proxy
       });
     });
   });
-
+function setSelectedKey(nodeobj, treeNode, eventObj) {
+  console.log(nodeobj);
+  console.log(treeNode);
+  console.log(eventObj);
+}
 onMounted(() => {
   generateSkuList();
   if (proxy.$route.query.id) {

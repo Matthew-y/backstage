@@ -44,6 +44,7 @@
             class="input-box"
             :data="superiorTypeList"
             node-key="value"
+            check-on-click-node
             v-model="defaultSelected"
             :render-after-expand="false"
             :default-checked-keys="defaultSelected"
