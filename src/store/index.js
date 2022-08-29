@@ -2,22 +2,22 @@ import { createStore } from 'vuex'
 
 export default createStore({
   modules: {
-    productType: {
+    product: {
       state: {
-        typeList: []
+        productInfo: {}
       },
       getters: {
-        typeList: (state) => state.typeList,
+        product: (state) => state.productInfo,
       },
       mutations: {
-        mutateTypeList: (state, val) => {
-          state.typeList = val;
+        mutateProductInfo: (state, val) => {
+          state.productInfo = val;
         }
       },
       actions: {
-        async setTypeList({ state, commit }, valueIn){
+        async setProductInfo({ state, commit }, valueIn){
           console.log(valueIn, 'hello');
-          commit('mutateTypeList', valueIn);
+          commit('mutateProductInfo', valueIn);
         }
       }
     }

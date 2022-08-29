@@ -32,7 +32,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="菜单权限:">
-          <el-tree :data="permissionData" :props="props" show-checkbox @check="handleCheckChange" :default-checked-keys="dialogForm.menupermission" node-key="permission_id" />
+          <el-tree
+            :data="permissionData"
+            :props="props"
+            show-checkbox
+            @check-change="handleCheckChange"
+            :default-checked-keys="dialogForm.menupermission"
+            node-key="permission_id"
+          />
         </el-form-item>
         <el-form-item label="排序:" required :show-message="false">
           <el-input-number style="width: 88px" controls-position="right" :min="0" class="input-num" v-model="dialogForm.sort" />
@@ -53,13 +60,24 @@
       </template>
     </el-dialog>
   </el-container>
+  <el-pagination
+    @current-change="currentChange"
+    :page-sizes="[20, 40, 80, 100]"
+    :page-size="10"
+    :total="pageTotal"
+    background
+  >
+  </el-pagination>
 </template>
 <script setup>
+import { ElMessage } from "element-plus";
 import { ref, getCurrentInstance, onMounted } from "vue";
 
 const { proxy } = getCurrentInstance();
+let pageTotal = ref(10);
+let pageIndex = ref('1');
 let accessToken = localStorage.getItem("AccessToken");
-let dialogTitle = ref('新增角色');
+let dialogTitle = ref("新增角色");
 let dialogVisible = ref(false);
 let roleList = ref([]);
 let dialogForm = ref({
@@ -83,7 +101,7 @@ const props = {
 
 // 新建角色
 function showDialog() {
-  dialogTitle.value = '新增角色';
+  dialogTitle.value = "新增角色";
   dialogVisible.value = !dialogVisible.value;
   resetDialogForm();
 }
@@ -96,10 +114,12 @@ function handleSuperiorSelect(val) {
   });
 }
 // 录入菜单权限数据
-function handleCheckChange(nodeObj, status) {
-  status.checkedNodes.forEach((item) => {
-    dialogForm.value.menupermission.push(item.permission_id);
-  });
+function handleCheckChange(nodeObj, status, childCheckedStatus) {
+  if(status) {
+    dialogForm.value.menupermission.push(nodeObj.permission_id);
+  }else{
+    dialogForm.value.menupermission.splice(dialogForm.value.menupermission.lastIndexOf(nodeObj.permission_id), 1);
+  }
 }
 // 确认添加角色
 function confirmAddRole(action) {
@@ -113,8 +133,17 @@ function confirmAddRole(action) {
         role_id: dialogForm.value.role_id,
       })
       .then((res) => {
-        console.log(res.data);
+        if (res.data.msg === "操作成功") {
+          ElMessage({
+            message: "修改成功",
+            type: "success",
+          });
+          resetDialogForm();
+          getRoleList();
+          dialogVisible.value = false;
+        }
       });
+      
   } else {
     proxy.$axios
       .post("http://api_devs.wanxikeji.cn/api/admin/roleAddModify", {
@@ -124,16 +153,27 @@ function confirmAddRole(action) {
         sort: dialogForm.value.sort,
       })
       .then((res) => {
-        console.log(res.data);
+        if (res.data.msg === "操作成功") {
+          ElMessage({
+            message: "新建成功",
+            type: "success",
+          });
+          resetDialogForm();
+          getRoleList();
+          dialogVisible.value = false; // 关闭输入框
+        } else {
+          ElMessage({
+            message: res.data.msg,
+            type: "warning",
+          });
+        }
       });
   }
-  resetDialogForm();
-  dialogVisible.value = false; // 关闭输入框
 }
 // 编辑角色
 function editRole(scope) {
-  dialogTitle.value = '编辑角色';
-  showDialog()
+  dialogTitle.value = "编辑角色";
+  dialogVisible.value = true;
   dialogForm.value = {
     name: scope.row.role_name,
     superior: "",
@@ -148,12 +188,13 @@ function editRole(scope) {
 // 删除角色
 function deleteRole(scope) {
   proxy.$axios.post("http://api_devs.wanxikeji.cn/api/admin/accountDelete", { token: accessToken, id: scope.row.role_id }).then((res) => {
-    console.log(res);
+    alert(res.data.msg);
   });
 }
 // 获取角色列表
 function getRoleList() {
-  proxy.$axios.post("http://api_devs.wanxikeji.cn/api/admin/roleLise", { token: accessToken }).then((res) => {
+  proxy.$axios.post("http://api_devs.wanxikeji.cn/api/admin/roleLise", { token: accessToken, page: pageIndex.value, size: '10' }).then((res) => {
+    pageTotal.value = res.data.data.count;
     roleList.value = res.data.data.data;
   });
 }
@@ -165,6 +206,12 @@ function resetDialogForm() {
     menupermission: [],
     sort: 100,
   };
+  console.log("reset form");
+}
+// 更改页码
+function currentChange(index) {
+  pageIndex.value = String(index);
+  getRoleList();
 }
 // 表格表头样式
 function tableHeaderStyle() {
@@ -186,6 +233,7 @@ function tableCellStyle() {
 }
 onMounted(() => {
   getRoleList();
+  // 获取权限列表
   proxy
     .$axios({
       url: "http://api_devs.wanxikeji.cn/api/admin/permissionList",

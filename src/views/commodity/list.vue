@@ -44,27 +44,33 @@
         <el-table-column property="create_time" label="添加时间" width="205"></el-table-column>
         <el-table-column label="操作" width="176">
           <template #default="scope">
-            <span class="action" @click="editProduct(scope.$index, scope.row)">编辑</span>
-            <span class="action" @click="deleteProduct(scope.$index, scope.row)">删除</span>
+            <span class="action" @click="editProduct(scope)">编辑</span>
+            <span class="action" @click="deleteProduct(scope)">删除</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
   </el-container>
+  <el-pagination @current-change="currentChange" :page-size="10" :total="pageTotal" background></el-pagination>
 </template>
 <script setup>
 import { ref, getCurrentInstance, onMounted } from "vue";
+import { useStore } from "vuex";
 import { Search, Plus } from "@element-plus/icons-vue";
 
 const { proxy } = getCurrentInstance();
+const store = useStore();
 const accessToken = localStorage.getItem("AccessToken");
 let selectValue = ref("1");
+let pageTotal = ref(10);
+let pageIndex = ref("1");
 // 搜索关键词
 let searchKeywords = ref({
   name: "",
   code: "",
   type: "",
 });
+
 // 商品分类下拉菜单选项
 let selectOptions = ref([
   {
@@ -375,28 +381,22 @@ let productList = ref([
 ]);
 // 请求商品数据
 function getProductList() {
-  // proxy.$axios
-  //   .post("http://api_devs.wanxikeji.cn/api/admin/goodList", {
-  //     token: accessToken,
-  //     page: "1",
-  //     size: "12",
-  //     good_type: searchKeywords.value.type,
-  //     search: searchKeywords.value.name,
-  //   })
-  //   .then((res) => {
-  //     productList.value = res.data.data.data;
-  //     console.log(productList.value[0]);
-  //   });
   proxy
     .$axios({
       url: "http://api_devs.wanxikeji.cn/api/admin/goodList",
       method: "post",
-      params: { token: accessToken, page: "1", size: "12", good_type: searchKeywords.value.type, search: searchKeywords.value.name },
+      params: {
+        token: accessToken,
+        page: pageIndex.value,
+        size: "10",
+        good_type: searchKeywords.value.type,
+        search: searchKeywords.value.name,
+      },
     })
     .then((res) => {
       if (res.data.code !== 2000) return;
       productList.value = res.data.data.data;
-      console.log(res);
+      pageTotal.value = res.data.data.count;
     });
 }
 // 添加商品
@@ -404,14 +404,20 @@ function createProduct() {
   proxy.$router.push("/index/commodity/createProduct");
 }
 // 编辑商品信息
-function editProduct(index, row) {
-  proxy.$router.push('/index/commodity/createProduct')
+function editProduct(scope) {
+  let tempInfo = { name: scope.row.good_name };
+  proxy.$router.push({ path: "/index/commodity/createProduct", query: { id: scope.row.good_id } });
 }
 // 删除商品信息
-function deleteProduct(index, row) {
-  proxy.$axios.post("http://api_devs.wanxikeji.cn/api/admin/deleteGood", { token: accessToken, good_id: row.good_id }).then((res) => {
-    console.log(res);
+function deleteProduct(scope) {
+  proxy.$axios.post("http://api_devs.wanxikeji.cn/api/admin/deleteGood", { token: accessToken, good_id: scope.row.good_id }).then((res) => {
+    alert(res.data.msg);
   });
+}
+// 页码变更
+function currentChange(index) {
+  pageIndex.value = String(index);
+  getProductList();
 }
 // 表格表头样式
 function tableHeaderStyle() {

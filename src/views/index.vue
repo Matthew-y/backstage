@@ -10,6 +10,7 @@
         @select=""
         :collapse="isCollapsed"
         :default-active="pinedMenuItem"
+        collapse-transition
       >
         <div class="menu-title"><span class="">萤火商城2.0</span></div>
         <el-menu-item v-for="(item, index) in menuData" :key="index" :index="String(index)" @click="loadSubMenu(index)">
@@ -52,7 +53,7 @@
           <el-container class="sub-menu">
             <el-aside v-if="submenuData.title && !isCollapsed" width="120px">
               <!-- 子菜单 -->
-              <el-menu :data="submenuData" @select="" default-active="0" :route="true">
+              <el-menu :data="submenuData" default-active="0" :route="true" collapse-transition>
                 <div class="submenu-title">
                   {{ submenuData.title }}
                 </div>
@@ -293,7 +294,6 @@ onMounted(() => {
   }
 
   loadComponentPage(submenuData.value.list[0].subtitle, mainIndex, subIndex);
-  proxy.$router.push('/index/commodity/classification')
 });
 </script>
 <style scoped>
@@ -337,6 +337,8 @@ ul.el-menu:not(.el-menu--collapse) {
   line-height: 60px;
   color: #e4e6e8;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .menu-title span {
   margin-left: 18px;
