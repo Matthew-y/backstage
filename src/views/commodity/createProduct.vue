@@ -147,13 +147,16 @@
                   <template #default="scope">
                     <el-upload
                       class="table-uploader"
-                      action="http://api_devss.wanxikeji.cn/api/savePic"
-                      :show-file-list="false"
                       name="img"
-                      :on-success="handleTableUploadSuccess"
-                      :before-upload="beforeTableUpload"
+                      :show-file-list="false"
+                      action="http://api_devss.wanxikeji.cn/api/savePic"
+                      :on-success="
+                        (res, file) => {
+                          handleTableUploadSuccess(res, file, scope);
+                        }
+                      "
                     >
-                      <img v-if="scope.row.img" :src="scope.row.img" class="avatar" />
+                      <img width="50" v-if="scope.row.img" :src="scope.row.img" alt="fail" />
                       <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
                     </el-upload>
                   </template>
@@ -168,7 +171,7 @@
                     ></el-input-number>
                   </template>
                 </el-table-column>
-                <el-table-column width="127px" height="75px" prop="" label="划线价格">
+                <el-table-column width="127px" height="75px" label="划线价格">
                   <template #default="scope">
                     <el-input-number
                       class="table-num"
@@ -178,7 +181,7 @@
                     ></el-input-number>
                   </template>
                 </el-table-column>
-                <el-table-column width="127px" height="75px" prop="" label="库存数量">
+                <el-table-column width="127px" height="75px" label="库存数量">
                   <template #default="scope">
                     <el-input-number
                       class="table-num"
@@ -188,7 +191,7 @@
                     ></el-input-number>
                   </template>
                 </el-table-column>
-                <el-table-column width="127px" height="75px" prop="" label="商品重量(KG)">
+                <el-table-column width="127px" height="75px" label="商品重量(KG)">
                   <template #default="scope">
                     <el-input-number
                       class="table-num"
@@ -198,7 +201,7 @@
                     ></el-input-number>
                   </template>
                 </el-table-column>
-                <el-table-column width="127px" height="75px" prop="" label="SKU编码">
+                <el-table-column width="127px" height="75px" label="SKU编码">
                   <template #default="scope">
                     <el-input-number
                       class="table-num"
@@ -383,7 +386,7 @@ function generateSkuList() {
   temp.forEach((item) => {
     specsTableData.value.push({
       sku: item.split("&"),
-      img: "",
+      img: [],
       price: null,
       diaplayPrice: null,
       storage: null,
@@ -422,8 +425,8 @@ function handlePicPreview(uploadFile) {
 function handleUploadSuccess(res, uploadFile) {
   console.log(res);
 }
-function handleTableUploadSuccess(res, uploadFile, img){
-  console.log(res);
+function handleTableUploadSuccess(res, file, scope) {
+  scope.row.img = "http://api_devss.wanxikeji.cn/" + res.data;
 }
 // 编辑器创建后
 function handleCreated(editor) {
@@ -637,7 +640,7 @@ onBeforeUnmount(() => {
 .el-form-item {
   min-height: 40px;
   margin-bottom: 18px;
-  .table-uploader{
+  .table-uploader {
     width: 50px;
     height: 50px;
     border: 1px dashed lightgray;
