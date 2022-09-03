@@ -11,14 +11,7 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/') {
     if(accessToken){
         router.push({ path: '/index' });
-    }
-    next();
-  }else{
-    if(accessToken){
-      if (to.path === '/') {
-        router.push({ path: '/index' });
-      }
-      next()
+        next();
     }else{
       console.log('need login')
       router.push({ path: '/' });

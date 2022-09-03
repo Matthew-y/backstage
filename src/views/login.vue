@@ -8,28 +8,18 @@
     <el-row>
       <el-col class="title" :span="7" :offset="8">商城系统登录</el-col>
     </el-row>
-    <el-form ref="formInstance" :model="ruleForm" :rules="rules" size="normal">
+    <el-form ref="formInstance" :model="ruleForm" :rules="rules">
       <el-row>
         <el-col :span="24" :offset="0">
           <el-form-item prop="name">
-            <el-input v-model="ruleForm.name" class="username" type="text" size="large" :prefix-icon="User" placeholder="请输入用户名" />
+            <el-input v-model="ruleForm.name" class="username" type="text" :prefix-icon="User" placeholder="请输入用户名" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24" :offset="0">
           <el-form-item prop="pw">
-            <el-input
-              type="password"
-              class="password"
-              v-model="ruleForm.pw"
-              size="large"
-              :prefix-icon="Lock"
-              show-password
-              clearable
-              @change=""
-              placeholder="请输入密码"
-            />
+            <el-input type="password" class="password" v-model="ruleForm.pw" :prefix-icon="Lock" show-password clearable @change="" placeholder="请输入密码"/>
           </el-form-item>
         </el-col>
       </el-row>

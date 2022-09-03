@@ -2,11 +2,11 @@ import axios from "axios";
 
 
 const myAxios = new axios.create({});
-axios.interceptors.request.use((config) => {
+myAxios.interceptors.request.use((config) => {
   return config;
 });
 
-axios.interceptors.response.use((res) => {
+myAxios.interceptors.response.use((res) => {
   return res;
 })
 
