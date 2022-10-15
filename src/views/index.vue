@@ -266,8 +266,15 @@ function loadCurrentPageName(pageName) {
   currentPageName.value === pageName ? "" : (currentPageName.value = pageName);
 }
 // 默认选中子菜单第一项
-// TODO
-function defaultSelectItem() {}
+proxy.$axios.post('http://api_devs.wanxikeji.cn/api/admin/couponAddModify', { 
+  token: localStorage.getItem('AccessToken'),
+  reduce: 10,
+  achieve: 20,
+  count: 100,
+  type_id: 9879,
+ }).then(res => {
+  console.log(res);
+})
 
 onMounted(() => {
   submenuData.value = menuData.value[1].child; // 默认加载的子菜单

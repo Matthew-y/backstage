@@ -50,10 +50,7 @@
       <template #footer>
         <el-button
           class="cancel-btn"
-          @click="
-            dialogVisible = false;
-            resetDialogForm;
-          "
+          @click="dialogVisible = false;resetDialogForm();"
           >取消</el-button
         >
         <el-button type="primary" @click="confirmAddRole">确定</el-button>

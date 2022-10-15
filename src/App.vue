@@ -3,9 +3,6 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import { ElForm, ElInput, ElIcon, ElButton, ElCol } from "element-plus";
-import { Search, Calendar } from "@element-plus/icons-vue";
-let data = ref("helloworld");
 </script>
 <style>
 *{

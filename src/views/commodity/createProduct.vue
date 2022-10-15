@@ -269,9 +269,9 @@
 <script setup>
 import { getCurrentInstance, ref, shallowRef, onMounted, onBeforeUnmount, watch } from "vue";
 import { useStore } from "vuex";
-import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+// import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { Plus } from "@element-plus/icons-vue";
-import "@wangeditor/editor/dist/css/style.css";
+// import "@wangeditor/editor/dist/css/style.css";
 import { ElMessage } from "element-plus";
 
 const { proxy } = getCurrentInstance();
