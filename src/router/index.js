@@ -52,20 +52,12 @@ const routes = [
         component: () => import("@/views/commodity/classification.vue"),
       },
       {
-        path: "/index/order/allOrder",
-        component: () => import("@/views/order/allOrder.vue"),
-      },
-      {
         path: "/index/vip/list",
         component: () => import("@/views/vip/list.vue"),
       },
       {
         path: "/index/content/fileManage",
         component: () => import("@/views/content/fileManage.vue"),
-      },
-      {
-        path: "/index/marketing/coupon",
-        component: () => import("@/views/marketing/coupon.vue"),
       },
       {
         path: "/index/app/registery",
